@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import ConfirmationPage from './pages/ConfirmationPage';
+import AccountPage from './pages/AccountPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="carrinho" element={<CartPage />} />
         <Route path="checkout" element={<CheckoutPage />} />
         <Route path="pedido/:orderId" element={<ConfirmationPage />} />
+        <Route path="minha-conta" element={<AccountPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
