@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import CheckoutStepper from '../components/CheckoutStepper';
 import OrderSummary, { calculateTotals } from '../components/OrderSummary';
@@ -20,11 +20,13 @@ export default function CheckoutPage() {
   usePageTitle('Checkout');
   const { cartItems, subtotal, appliedCoupon, clearCart } = useCart();
   const { currentUser, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('PIX');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const [completedOrderId, setCompletedOrderId] = useState(null);
 
+  // Pedido criado: o carrinho esvazia, então redireciona antes da checagem de carrinho vazio
+  if (completedOrderId) return <Navigate to={`/pedido/${completedOrderId}`} replace />;
   if (!isAuthenticated) return <Navigate to="/login?redirect=/checkout" replace />;
   if (cartItems.length === 0) return <Navigate to="/carrinho" replace />;
 
@@ -40,9 +42,9 @@ export default function CheckoutPage() {
         paymentMethod,
         couponCode: appliedCoupon?.code,
       });
+      setCompletedOrderId(response.data.id);
       clearCart();
       toast.success('Pagamento confirmado!');
-      navigate(`/pedido/${response.data.id}`, { replace: true });
     } catch (requestError) {
       setSubmitError(getErrorMessage(requestError, 'Não foi possível finalizar o pedido.'));
       setIsSubmitting(false);

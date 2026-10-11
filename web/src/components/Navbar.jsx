@@ -26,8 +26,8 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <nav className="container navbar-inner" aria-label="Navegação principal">
-        <Link to="/" className="logo" aria-label="CS2 Market, página inicial">
-          CS2<span>MARKET</span>
+        <Link to="/" className="logo">
+          CS2<span>MARKET</span><span className="visually-hidden"> página inicial</span>
         </Link>
 
         <button
@@ -64,7 +64,7 @@ export default function Navbar() {
           )}
           <NavLink to="/carrinho" className={navLinkClass}>
             Carrinho
-            <span className="cart-count" aria-label={`${cartItems.length} itens`}>{cartItems.length}</span>
+            <span className="cart-count">{cartItems.length}<span className="visually-hidden"> itens</span></span>
           </NavLink>
         </div>
       </nav>
