@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { toast } from '../components/Toast';
 import Breadcrumb from '../components/Breadcrumb';
 import CheckoutStepper from '../components/CheckoutStepper';
 import OrderSummary from '../components/OrderSummary';
@@ -38,10 +38,10 @@ export default function CartPage() {
     setIsApplyingCoupon(true);
     setCouponError(null);
     try {
-      const response = await findCoupon(couponCode.trim());
-      setAppliedCoupon(response.data);
+      const foundCoupon = await findCoupon(couponCode.trim());
+      setAppliedCoupon(foundCoupon);
       setCouponCode('');
-      toast.success(`Cupom ${response.data.code} aplicado: ${response.data.discountPercent}% off`);
+      toast.success(`Cupom ${foundCoupon.code} aplicado: ${foundCoupon.discountPercent}% off`);
     } catch (requestError) {
       setCouponError(getErrorMessage(requestError, 'Cupom inválido'));
     } finally {

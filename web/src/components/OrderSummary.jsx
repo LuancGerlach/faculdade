@@ -1,12 +1,11 @@
 import { formatCurrency } from '../utils/formatters';
+import { calculateDiscountInCents, PIX_DISCOUNT_PERCENT } from '../../../shared/pricing';
 
-export const PIX_DISCOUNT_PERCENT = 5;
-
-// Mesma regra do back (PricingUtils): Pix 5% + cupom, sobre o subtotal
+// Mesma regra do back (shared/pricing): Pix 5% + cupom, sobre o subtotal
 export function calculateTotals(subtotal, paymentMethod, couponPercent = 0) {
-  const pixPercent = paymentMethod === 'PIX' ? PIX_DISCOUNT_PERCENT : 0;
-  const pixDiscount = Math.round(subtotal * pixPercent) / 100;
-  const couponDiscount = Math.round(subtotal * couponPercent) / 100;
+  const subtotalInCents = Math.round(subtotal * 100);
+  const pixDiscount = calculateDiscountInCents(subtotalInCents, paymentMethod) / 100;
+  const couponDiscount = calculateDiscountInCents(subtotalInCents, 'CARTAO', couponPercent) / 100;
   return { pixDiscount, couponDiscount, total: subtotal - pixDiscount - couponDiscount };
 }
 

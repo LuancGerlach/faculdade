@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { toast } from '../components/Toast';
 import Breadcrumb from '../components/Breadcrumb';
 import Icon from '../components/Icon';
 import StarRating from '../components/StarRating';

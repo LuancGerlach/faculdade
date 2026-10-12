@@ -11,8 +11,8 @@ export function useOrders(userId) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await findOrdersByUser(userId);
-      setOrders(response.data);
+      const userOrders = await findOrdersByUser(userId);
+      setOrders(userOrders);
     } catch (requestError) {
       setError({ message: getErrorMessage(requestError, 'Não foi possível carregar suas compras.'), status: getErrorStatus(requestError) });
     } finally {
