@@ -57,3 +57,33 @@ describe('API REST', () => {
     expect(deletedOrder.status).toBe(204);
   });
 });
+
+describe('API REST · erros padronizados', () => {
+  it('rota inexistente devolve 404 no formato ErrorResponse', async () => {
+    const response = await request(app).get('/api/nao-existe');
+    expect(response.status).toBe(404);
+    expect(response.body).toMatchObject({ message: 'Resource not found', status: 404 });
+  });
+
+  it('JSON malformado devolve 400', async () => {
+    const response = await request(app).post('/api/users').set('Content-Type', 'application/json').send('{"name":');
+    expect(response.status).toBe(400);
+  });
+
+  it('id não numérico devolve 400', async () => {
+    const response = await request(app).get('/api/products/abc');
+    expect(response.status).toBe(400);
+  });
+
+  it('login inválido devolve 401', async () => {
+    const response = await request(app).post('/api/auth/login').send({ email: 'ninguem@email.com', password: 'x' });
+    expect(response.status).toBe(401);
+  });
+
+  it('GET /api/coupons/:code valida cupom', async () => {
+    const validCoupon = await request(app).get('/api/coupons/HEADSHOT15');
+    expect(validCoupon.body.discountPercent).toBe(15);
+    const invalidCoupon = await request(app).get('/api/coupons/NADA');
+    expect(invalidCoupon.status).toBe(404);
+  });
+});
