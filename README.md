@@ -171,3 +171,4 @@ Todo erro segue o mesmo formato:
 - Tipos de commit: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 - Toda mudança entra em `develop` por Pull Request revisado por outro integrante.
 
+Normas de contribuição: [CONTRIBUTING.md](CONTRIBUTING.md).
