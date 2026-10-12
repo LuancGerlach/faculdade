@@ -1,5 +1,5 @@
-import api from './axios';
+import { httpClient } from './httpClient';
 
-export const findProducts = (filters) => api.get('/api/products', { params: filters });
+export const findProducts = (filters) => httpClient.get('/api/products', filters);
 
-export const findProductById = (productId) => api.get(`/api/products/${productId}`);
+export const findProductById = (productId) => httpClient.get(`/api/products/${productId}`);
