@@ -1,9 +1,7 @@
-import api from './axios';
+import { httpClient } from './httpClient';
 
-export const createUser = (userRequest) => api.post('/api/users', userRequest);
+export const createUser = (userRequest) => httpClient.post('/api/users', userRequest);
 
-export const updateUser = (userId, userRequest) => api.put(`/api/users/${userId}`, userRequest);
+export const updateUser = (userId, userRequest) => httpClient.put(`/api/users/${userId}`, userRequest);
 
-export const findUserById = (userId) => api.get(`/api/users/${userId}`);
-
-export const login = (credentials) => api.post('/api/auth/login', credentials);
+export const login = (credentials) => httpClient.post('/api/auth/login', credentials);

@@ -16,8 +16,8 @@ export default function ConfirmationPage() {
   const fetchOrder = useCallback(async () => {
     setRequestError(null);
     try {
-      const response = await findOrderById(orderId);
-      setOrder(response.data);
+      const foundOrder = await findOrderById(orderId);
+      setOrder(foundOrder);
     } catch (error) {
       setRequestError({ message: getErrorMessage(error), status: getErrorStatus(error) });
     }

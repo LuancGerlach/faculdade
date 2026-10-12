@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { toast } from '../components/Toast';
 import CheckoutStepper from '../components/CheckoutStepper';
 import OrderSummary, { calculateTotals } from '../components/OrderSummary';
 import { useCart } from '../context/CartContext';
@@ -36,13 +36,13 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-      const response = await createOrder({
+      const createdOrder = await createOrder({
         userId: currentUser.id,
         productIds: cartItems.map((cartItem) => cartItem.id),
         paymentMethod,
         couponCode: appliedCoupon?.code,
       });
-      setCompletedOrderId(response.data.id);
+      setCompletedOrderId(createdOrder.id);
       clearCart();
       toast.success('Pagamento confirmado!');
     } catch (requestError) {

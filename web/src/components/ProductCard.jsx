@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { toast } from './Toast';
 import StarRating from './StarRating';
 import { useCart } from '../context/CartContext';
 import { formatCurrency, productTypeLabel } from '../utils/formatters';

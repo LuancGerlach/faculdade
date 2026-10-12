@@ -12,8 +12,8 @@ export function useProducts(filters) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await findProducts(JSON.parse(filtersKey));
-      setProducts(response.data);
+      const foundProducts = await findProducts(JSON.parse(filtersKey));
+      setProducts(foundProducts);
     } catch (requestError) {
       setError(getErrorMessage(requestError, 'Não foi possível carregar os produtos.'));
     } finally {
