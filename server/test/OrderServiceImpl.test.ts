@@ -5,6 +5,7 @@ import { InMemoryProductRepository } from '../repository/impl/memory/InMemoryPro
 import { InMemoryUserRepository } from '../repository/impl/memory/InMemoryUserRepository.js';
 import { ResourceNotFoundException } from '../exception/ResourceNotFoundException.js';
 import { BusinessRuleException } from '../exception/BusinessRuleException.js';
+import { CouponServiceImpl } from '../service/impl/CouponServiceImpl.js';
 
 describe('OrderServiceImpl', () => {
   let orderService: OrderServiceImpl;
@@ -14,7 +15,7 @@ describe('OrderServiceImpl', () => {
     const userRepository = new InMemoryUserRepository();
     const buyer = await userRepository.save({ name: 'João', email: 'joao@email.com', cpf: '52998224725', passwordHash: 'x' });
     buyerId = buyer.id;
-    orderService = new OrderServiceImpl(new InMemoryOrderRepository(), new InMemoryProductRepository(), userRepository);
+    orderService = new OrderServiceImpl(new InMemoryOrderRepository(), new InMemoryProductRepository(), userRepository, new CouponServiceImpl());
   });
 
   it('aplica 5% de desconto no Pix', async () => {
