@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { isValidCpf, onlyDigits } from '../../utils/CpfValidatorUtils.js';
+import { isValidCpf, onlyDigits } from '../../../shared/cpf.js';
 
 const nameField = z.string().trim().min(3, 'Nome deve ter ao menos 3 caracteres').max(120, 'Nome muito longo');
 const emailField = z.string().trim().toLowerCase().email('E-mail inválido');
