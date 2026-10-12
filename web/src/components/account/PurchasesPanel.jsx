@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { toast } from '../Toast';
 import { ConfirmModal } from '../Modal';
 import { EmptyState, ErrorState, LoadingState } from '../StateMessage';
 import { useOrders } from '../../hooks/useOrders';
@@ -24,9 +24,9 @@ export default function PurchasesPanel({ userId, onUserNotFound }) {
   const handleResendEmail = async (order) => {
     setResendingOrderId(order.id);
     try {
-      const response = await resendOrderEmail(order.id);
-      replaceOrder(response.data);
-      toast.success(`E-mail do pedido #${order.code} reenviado para ${response.data.deliveryEmail}`);
+      const resentOrder = await resendOrderEmail(order.id);
+      replaceOrder(resentOrder);
+      toast.success(`E-mail do pedido #${order.code} reenviado para ${resentOrder.deliveryEmail}`);
     } catch (requestError) {
       toast.error(getErrorMessage(requestError));
     } finally {

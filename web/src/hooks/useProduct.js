@@ -13,8 +13,8 @@ export function useProduct(productId) {
     setError(null);
     setIsNotFound(false);
     try {
-      const response = await findProductById(productId);
-      setProduct(response.data);
+      const foundProduct = await findProductById(productId);
+      setProduct(foundProduct);
     } catch (requestError) {
       setIsNotFound(getErrorStatus(requestError) === 404 || getErrorStatus(requestError) === 400);
       setError(getErrorMessage(requestError, 'Não foi possível carregar o produto.'));

@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { toast } from '../components/Toast';
 import PurchasesPanel from '../components/account/PurchasesPanel';
 import AccountDataPanel from '../components/account/AccountDataPanel';
 import { useAuth } from '../context/AuthContext';

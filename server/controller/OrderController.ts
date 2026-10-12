@@ -28,8 +28,4 @@ export class OrderController {
     await this.orderService.delete(parseIdParam(request.params.id));
     response.status(204).send();
   };
-
-  findCoupon = async (request: Request, response: Response) => {
-    response.status(200).json(await this.orderService.findCoupon(String(request.params.code)));
-  };
 }

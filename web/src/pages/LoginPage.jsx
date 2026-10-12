@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import toast from 'react-hot-toast';
 import FormField from '../components/FormField';
+import { toast } from '../components/Toast';
 import { login } from '../api/userApi';
-import { applyServerErrors } from '../hooks/useServerFieldErrors';
+import { applyServerErrors } from '../api/errorHandler';
 import { useAuth } from '../context/AuthContext';
-import { loginSchema } from '../validation/userSchemas';
+import { useForm } from '../hooks/useForm';
+import { validateLogin } from '../validation/userValidation';
 import usePageTitle from '../hooks/usePageTitle';
 
 export default function LoginPage() {
@@ -18,22 +17,21 @@ export default function LoginPage() {
   const [searchParams] = useSearchParams();
   const redirectPath = searchParams.get('redirect') || '/minha-conta';
 
-  const {
-    register, handleSubmit, setError, formState: { errors, isSubmitting },
-  } = useForm({ resolver: zodResolver(loginSchema), defaultValues: { email: '', password: '' }, mode: 'onTouched' });
-
-  const onSubmit = async (credentials) => {
-    setFormAlert(null);
-    try {
-      const response = await login(credentials);
-      signIn(response.data);
-      toast.success(`Bem-vindo, ${response.data.name.split(' ')[0]}!`);
-      navigate(redirectPath);
-    } catch (requestError) {
-      const generalMessage = applyServerErrors(requestError, setError);
-      if (generalMessage) setFormAlert(generalMessage);
-    }
-  };
+  const { isSubmitting, fieldProps, handleSubmit } = useForm({
+    initialValues: { email: '', password: '' },
+    validate: validateLogin,
+    onSubmit: async (credentials, { setFieldErrors }) => {
+      setFormAlert(null);
+      try {
+        const authenticatedUser = await login(credentials);
+        signIn(authenticatedUser);
+        toast.success(`Bem-vindo, ${authenticatedUser.name.split(' ')[0]}!`);
+        navigate(redirectPath);
+      } catch (requestError) {
+        setFormAlert(applyServerErrors(requestError, setFieldErrors));
+      }
+    },
+  });
 
   return (
     <div className="container page">
@@ -41,10 +39,10 @@ export default function LoginPage() {
         <h1 className="page-title">Entrar</h1>
         <p className="auth-subtitle">Acesse suas compras e continue de onde parou.</p>
 
-        <form className="panel" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form className="panel" onSubmit={handleSubmit} noValidate>
           {formAlert && <div className="form-alert" role="alert">{formAlert}</div>}
-          <FormField id="login-email" label="E-mail" type="email" required autoComplete="email" error={errors.email?.message} {...register('email')} />
-          <FormField id="login-password" label="Senha" type="password" required autoComplete="current-password" error={errors.password?.message} {...register('password')} />
+          <FormField id="login-email" label="E-mail" type="email" required autoComplete="email" {...fieldProps('email')} />
+          <FormField id="login-password" label="Senha" type="password" required autoComplete="current-password" {...fieldProps('password')} />
           <button type="submit" className="btn btn-full" disabled={isSubmitting}>
             {isSubmitting ? 'Entrando...' : 'Entrar'}
           </button>

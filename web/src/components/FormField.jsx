@@ -1,10 +1,5 @@
-import { forwardRef } from 'react';
-
 // Campo reutilizável: label associado, dica, erro anunciado e aria-invalid
-const FormField = forwardRef(function FormField(
-  { id, label, error, hint, required = false, type = 'text', ...inputProps },
-  inputRef,
-) {
+export default function FormField({ id, label, error, hint, required = false, type = 'text', ...inputProps }) {
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = error ? `${id}-error` : undefined;
   const describedBy = [errorId, hintId].filter(Boolean).join(' ') || undefined;
@@ -17,7 +12,6 @@ const FormField = forwardRef(function FormField(
       </label>
       <input
         id={id}
-        ref={inputRef}
         type={type}
         className="input"
         aria-invalid={error ? 'true' : 'false'}
@@ -29,6 +23,4 @@ const FormField = forwardRef(function FormField(
       {hint && !error && <p id={hintId} className="field-hint">{hint}</p>}
     </div>
   );
-});
-
-export default FormField;
+}

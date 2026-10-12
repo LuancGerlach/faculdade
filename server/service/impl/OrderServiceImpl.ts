@@ -3,10 +3,12 @@ import type { OrderRepository } from '../../repository/OrderRepository.js';
 import type { ProductRepository } from '../../repository/ProductRepository.js';
 import type { UserRepository } from '../../repository/UserRepository.js';
 import type { CreateOrderRequestDto } from '../../dto/order/OrderRequestDto.js';
-import type { CouponResponseDto, OrderResponseDto } from '../../dto/order/OrderResponseDto.js';
+import type { OrderResponseDto } from '../../dto/order/OrderResponseDto.js';
+import type { CouponService } from '../CouponService.js';
 import type { Order, OrderItem } from '../../entity/Order.js';
 import { OrderMapper } from '../../mapper/OrderMapper.js';
-import { calculateDiscountInCents, findCouponDiscountPercent, generateOrderCode } from '../../utils/PricingUtils.js';
+import { generateOrderCode } from '../../utils/PricingUtils.js';
+import { calculateDiscountInCents } from '../../../shared/pricing.js';
 import { ResourceNotFoundException } from '../../exception/ResourceNotFoundException.js';
 import { BusinessRuleException } from '../../exception/BusinessRuleException.js';
 
@@ -17,6 +19,7 @@ export class OrderServiceImpl implements OrderService {
     private readonly orderRepository: OrderRepository,
     private readonly productRepository: ProductRepository,
     private readonly userRepository: UserRepository,
+    private readonly couponService: CouponService,
   ) {}
 
   async create(orderRequest: CreateOrderRequestDto): Promise<OrderResponseDto> {
@@ -29,7 +32,9 @@ export class OrderServiceImpl implements OrderService {
       throw new ResourceNotFoundException(`Produto(s) não encontrado(s): ${missingProductIds.join(', ')}`);
     }
 
-    const couponPercent = orderRequest.couponCode ? this.resolveCouponPercent(orderRequest.couponCode) : 0;
+    const couponPercent = orderRequest.couponCode
+      ? (await this.couponService.findByCode(orderRequest.couponCode)).discountPercent
+      : 0;
 
     const orderItems: OrderItem[] = purchasedProducts.map((product) => ({
       productId: product.id,
@@ -69,9 +74,6 @@ export class OrderServiceImpl implements OrderService {
   // Mock do reenvio: incrementa contador e data; não envia e-mail de verdade
   async resendEmail(id: number): Promise<OrderResponseDto> {
     const foundOrder = await this.findOrderOrThrow(id);
-    if (foundOrder.status === 'CANCELADO') {
-      throw new BusinessRuleException('Pedido cancelado não pode ter o e-mail reenviado');
-    }
     if (foundOrder.emailSentCount >= RESEND_EMAIL_LIMIT) {
       throw new BusinessRuleException(`Limite de ${RESEND_EMAIL_LIMIT} envios atingido para este pedido`);
     }
@@ -88,15 +90,6 @@ export class OrderServiceImpl implements OrderService {
     await this.orderRepository.deleteById(id);
   }
 
-  async findCoupon(couponCode: string): Promise<CouponResponseDto> {
-    return { code: couponCode.toUpperCase(), discountPercent: this.resolveCouponPercent(couponCode) };
-  }
-
-  private resolveCouponPercent(couponCode: string): number {
-    const discountPercent = findCouponDiscountPercent(couponCode);
-    if (discountPercent === undefined) throw new ResourceNotFoundException(`Cupom ${couponCode} inválido ou expirado`);
-    return discountPercent;
-  }
 
   private async toDtoWithBuyerEmail(order: Order) {
     const buyer = await this.findUserOrThrow(order.userId);

@@ -12,9 +12,11 @@ import { PostgresOrderRepository } from '../repository/impl/postgres/PostgresOrd
 import { ProductServiceImpl } from '../service/impl/ProductServiceImpl.js';
 import { UserServiceImpl } from '../service/impl/UserServiceImpl.js';
 import { OrderServiceImpl } from '../service/impl/OrderServiceImpl.js';
+import { CouponServiceImpl } from '../service/impl/CouponServiceImpl.js';
 import { ProductController } from '../controller/ProductController.js';
 import { UserController } from '../controller/UserController.js';
 import { OrderController } from '../controller/OrderController.js';
+import { CouponController } from '../controller/CouponController.js';
 
 interface Repositories {
   productRepository: ProductRepository;
@@ -46,12 +48,14 @@ export function buildContainer(repositories: Repositories = buildRepositories())
 
   const productService = new ProductServiceImpl(productRepository);
   const userService = new UserServiceImpl(userRepository);
-  const orderService = new OrderServiceImpl(orderRepository, productRepository, userRepository);
+  const couponService = new CouponServiceImpl();
+  const orderService = new OrderServiceImpl(orderRepository, productRepository, userRepository, couponService);
 
   return {
     productController: new ProductController(productService),
     userController: new UserController(userService),
     orderController: new OrderController(orderService),
+    couponController: new CouponController(couponService),
   };
 }
 
