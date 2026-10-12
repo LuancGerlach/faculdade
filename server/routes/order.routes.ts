@@ -11,9 +11,3 @@ export function orderRoutes(orderController: OrderController) {
   router.delete('/:id', orderController.delete);
   return router;
 }
-
-export function couponRoutes(orderController: OrderController) {
-  const router = Router();
-  router.get('/:code', orderController.findCoupon);
-  return router;
-}

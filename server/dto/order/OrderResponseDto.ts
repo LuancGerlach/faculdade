@@ -22,8 +22,3 @@ export interface OrderResponseDto {
   createdAt: string;
   items: OrderItemResponseDto[];
 }
-
-export interface CouponResponseDto {
-  code: string;
-  discountPercent: number;
-}

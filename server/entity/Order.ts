@@ -1,5 +1,6 @@
-export type PaymentMethod = 'PIX' | 'CARTAO' | 'BOLETO';
-export type OrderStatus = 'PAGO' | 'CANCELADO';
+export type { PaymentMethod } from '../../shared/pricing.js';
+import type { PaymentMethod } from '../../shared/pricing.js';
+export type OrderStatus = 'PAGO';
 
 export interface OrderItem {
   productId: number;
