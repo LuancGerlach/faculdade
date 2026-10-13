@@ -46,7 +46,7 @@ describe('CartPage', () => {
     );
     renderWithProviders(<CartPageWithItem />, { route: '/carrinho' });
 
-    await screen.findByRole('button', { name: /remover default de ct em mirage/i });
+    await screen.findByRole('button', { name: /^remover/i });
     await user.type(screen.getByLabelText(/cupom de desconto/i), 'CUPOMFALSO');
     await user.click(screen.getByRole('button', { name: /aplicar/i }));
 
@@ -59,8 +59,8 @@ describe('CartPage', () => {
     const user = userEvent.setup();
     renderWithProviders(<CartPageWithItem />, { route: '/carrinho' });
 
-    await screen.findByRole('button', { name: /remover default de ct em mirage/i });
-    await user.click(screen.getByRole('button', { name: /remover default de ct em mirage/i }));
+    await screen.findByRole('button', { name: /^remover/i });
+    await user.click(screen.getByRole('button', { name: /^remover/i }));
 
     const dialog = await screen.findByRole('dialog');
     await user.click(within(dialog).getByRole('button', { name: /^remover$/i }));
