@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -17,7 +17,11 @@ const sampleItem = {
 // Coloca um item no carrinho real (CartProvider) antes de mostrar a página.
 function CartPageWithItem() {
   const { addToCart } = useCart();
+  const alreadyAdded = useRef(false);
   useEffect(() => {
+    // evita adicionar duas vezes (React StrictMode roda o efeito 2x)
+    if (alreadyAdded.current) return;
+    alreadyAdded.current = true;
     addToCart(sampleItem);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
