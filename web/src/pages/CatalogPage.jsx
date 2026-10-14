@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb';
 import Icon from '../components/Icon';
@@ -21,6 +21,7 @@ const sortOptions = [
   { value: 'avaliacao', label: 'Melhor avaliação' },
 ];
 const PRICE_LIMIT = 120;
+const PRODUCTS_PER_PAGE = 6;
 
 const parseList = (rawValue) => (rawValue ? rawValue.split(',') : []);
 
@@ -36,6 +37,15 @@ export default function CatalogPage() {
   const onlyTopRated = searchParams.get('minRating') === '4.5';
   const [maxPrice, setMaxPrice] = useState(Number(searchParams.get('maxPrice')) || PRICE_LIMIT);
   const debouncedMaxPrice = useDebouncedValue(maxPrice);
+  const [currentPage, setCurrentPage] = useState(1);
+  const catalogCriteriaKey = JSON.stringify({
+    search,
+    types: selectedTypes,
+    maps: selectedMaps,
+    sort,
+    onlyTopRated,
+    maxPrice,
+  });
 
   const { products, isLoading, error, refetch } = useProducts({
     search: search || undefined,
@@ -45,6 +55,17 @@ export default function CatalogPage() {
     minRating: onlyTopRated ? 4.5 : undefined,
     sort,
   });
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [catalogCriteriaKey]);
+
+  const pageCount = Math.ceil(products.length / PRODUCTS_PER_PAGE);
+  const displayedPage = Math.min(currentPage, pageCount || 1);
+  const pageProducts = products.slice(
+    (displayedPage - 1) * PRODUCTS_PER_PAGE,
+    displayedPage * PRODUCTS_PER_PAGE,
+  );
 
   const updateParam = (paramName, paramValue) => {
     setSearchParams((currentParams) => {
@@ -192,9 +213,45 @@ export default function CatalogPage() {
             </EmptyState>
           )}
           {!error && !isLoading && products.length > 0 && (
-            <div className="product-grid">
-              {products.map((product) => <ProductCard key={product.id} product={product} headingLevel={2} />)}
-            </div>
+            <>
+              <div className="product-grid">
+                {pageProducts.map((product) => <ProductCard key={product.id} product={product} headingLevel={2} />)}
+              </div>
+              {pageCount > 1 && (
+                <nav className="pagination" aria-label="Paginação dos resultados do catálogo">
+                  <button
+                    type="button"
+                    className="pagination-button"
+                    aria-label="Página anterior"
+                    disabled={displayedPage === 1}
+                    onClick={() => setCurrentPage(displayedPage - 1)}
+                  >
+                    Anterior
+                  </button>
+                  {Array.from({ length: pageCount }, (_, index) => index + 1).map((pageNumber) => (
+                    <button
+                      key={pageNumber}
+                      type="button"
+                      className="pagination-button"
+                      aria-label={`Ir para a página ${pageNumber}`}
+                      aria-current={pageNumber === displayedPage ? 'page' : undefined}
+                      onClick={() => setCurrentPage(pageNumber)}
+                    >
+                      {pageNumber}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="pagination-button"
+                    aria-label="Próxima página"
+                    disabled={displayedPage === pageCount}
+                    onClick={() => setCurrentPage(displayedPage + 1)}
+                  >
+                    Próxima
+                  </button>
+                </nav>
+              )}
+            </>
           )}
         </section>
       </div>
