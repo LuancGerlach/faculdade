@@ -188,6 +188,15 @@ ul { list-style: none; }
 .catalog-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
 .results-count { color: var(--txt-2); font-size: 14px; }
 .results-count strong { color: var(--txt-1); font-family: var(--font-ui); }
+.pagination { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+.pagination-button {
+  min-width: 40px; min-height: 40px; padding: 8px 12px;
+  background: var(--bg-1); border: 1px solid var(--line-strong); border-radius: var(--radius);
+  color: var(--txt-1); cursor: pointer;
+}
+.pagination-button:hover:not(:disabled) { border-color: var(--orange); background: var(--bg-2); }
+.pagination-button[aria-current='page'] { border-color: var(--orange); background: var(--orange); color: var(--bg-0); }
+.pagination-button:disabled { opacity: .55; cursor: not-allowed; }
 .select {
   background: var(--bg-1); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 9px 12px;
   font-family: var(--font-ui); font-size: 13px; color: var(--txt-1); min-height: 40px;

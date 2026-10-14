@@ -10,6 +10,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import ConfirmationPage from './pages/ConfirmationPage';
 import AccountPage from './pages/AccountPage';
 import NotFoundPage from './pages/NotFoundPage';
+import TermsPage from "./pages/TermsPage";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="pedido/:orderId" element={<ConfirmationPage />} />
         <Route path="minha-conta" element={<AccountPage />} />
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/termos" element={<TermsPage />} />
       </Route>
     </Routes>
   );

@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { ToastContainer } from './Toast';
 import Navbar from './Navbar';
@@ -21,7 +21,11 @@ export default function Layout() {
         <Outlet />
       </main>
       <footer className="footer">
-        <div className="container">CS2 Market · Projeto acadêmico de Programação para Interface de Usuário · UNIJUÍ</div>
+        <div className="container">
+          CS2 Market · Projeto acadêmico de Programação para Interface de Usuário · UNIJUÍ
+          {' · '}
+          <Link to="/termos">Termos de uso</Link>
+        </div>
       </footer>
       <ToastContainer />
     </>
