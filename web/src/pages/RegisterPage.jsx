@@ -79,7 +79,7 @@ export default function RegisterPage() {
                 aria-invalid={errors.acceptedTerms ? 'true' : 'false'}
                 aria-describedby={errors.acceptedTerms ? 'acceptedTerms-error' : undefined}
               />
-              <span>Aceito os termos de uso e a política de privacidade.<span className="required-mark" aria-hidden="true">*</span></span>
+              <span>Aceito os <a href="/termos" target="_blank" rel="noreferrer">termos de uso</a> e a política de privacidade.<span className="required-mark" aria-hidden="true">*</span></span>
             </label>
             {errors.acceptedTerms && (
               <p id="acceptedTerms-error" className="field-error" role="alert">{errors.acceptedTerms}</p>
