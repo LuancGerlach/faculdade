@@ -6,6 +6,8 @@ import Icon from '../components/Icon';
 import StarRating from '../components/StarRating';
 import { EmptyState, ErrorState, LoadingState } from '../components/StateMessage';
 import { useProduct } from '../hooks/useProduct';
+import { useProducts } from '../hooks/useProducts';
+import ProductCard from '../components/ProductCard';
 import { useCart } from '../context/CartContext';
 import usePageTitle from '../hooks/usePageTitle';
 import { formatCurrency, productTypeLabel } from '../utils/formatters';
@@ -50,6 +52,7 @@ function ModuleAccordion({ modules }) {
 export default function ProductPage() {
   const { productId } = useParams();
   const { product, isLoading, error, isNotFound, refetch } = useProduct(productId);
+  const { products: sameMapProducts } = useProducts({ map: product?.map });
   const { addToCart, isInCart } = useCart();
   const navigate = useNavigate();
   usePageTitle(product?.title ?? 'Produto');
@@ -69,6 +72,9 @@ export default function ProductPage() {
   if (error) return <div className="container page"><ErrorState message={error} onRetry={refetch} /></div>;
 
   const alreadyInCart = isInCart(product.id);
+  const relatedProducts = product.map
+    ? (sameMapProducts ?? []).filter((item) => item.id !== product.id).slice(0, 3)
+    : [];
   const handleAddToCart = () => {
     addToCart(product);
     toast.success('Adicionado ao carrinho');
@@ -129,6 +135,17 @@ export default function ProductPage() {
           <div className="info-note"><strong>Entrega no e-mail:</strong> link de acesso enviado na hora após o pagamento.</div>
         </aside>
       </div>
+
+      {relatedProducts.length > 0 && (
+        <section className="container page" aria-labelledby="related-title">
+          <h2 id="related-title" className="section-title">Você também pode gostar</h2>
+          <div className="product-grid">
+            {relatedProducts.map((relatedProduct) => (
+              <ProductCard key={relatedProduct.id} product={relatedProduct} />
+            ))}
+          </div>
+        </section>
+      )}
     </>
   );
 }
